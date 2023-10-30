@@ -1,0 +1,7 @@
+aws:
+  # 存储服务类型(minIO:minio, 阿里云:oss, 腾讯云:cos，华为云:obs，七牛云:kodo)
+  storageType: minio
+  endpoint: http://127.0.0.1:9200
+  bucketName: demo
+  accessKey: minioadmin
+  secretKey: minioadmin
