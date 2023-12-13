@@ -9,9 +9,9 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.net.URI;
@@ -23,7 +23,7 @@ import java.util.Objects;
 
 /**
  * @author gaozijie
- * @date 2023-10-27
+ * @since 2023-10-27
  */
 @Component
 public class AwsS3Client {
@@ -60,21 +60,25 @@ public class AwsS3Client {
     }
 
     /**
+     * 获取(下载)文件
+     * @param fileName 文件名（支持路径形式'xx/xx/xxx.png'）
+     * @return 文件二进制数据
+     */
+    public byte[] getFile(String fileName) {
+        S3Client s3Client = this.getS3Client();
+        GetObjectRequest getObjectReq = this.buildGetObjectReq(fileName, awsS3Configuration.getBucketName());
+        return s3Client.getObjectAsBytes(getObjectReq).asByteArray();
+    }
+
+    /**
      * 获取预签名url
      * @param fileName 文件名（支持路径形式'xx/xx/xxx.png'）
      * @return 预签名url
      */
     public String getPreSignUrl(String fileName) {
         S3Presigner s3Presigner = this.getS3Presigner();
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofSeconds(60))
-                .putObjectRequest(PutObjectRequest.builder()
-                        .bucket(awsS3Configuration.getBucketName())
-                        .key(fileName)
-                        .build())
-                .build();
-        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
-        return presignedRequest.url().toString();
+        PutObjectPresignRequest presignRequest = this.buildPutObjectPreSignReq(fileName, awsS3Configuration.getBucketName());
+        return s3Presigner.presignPutObject(presignRequest).url().toString();
     }
 
     /**
@@ -104,11 +108,8 @@ public class AwsS3Client {
      */
     public void uploadFile(String fileName, byte[] fileData) {
         S3Client s3Client = this.getS3Client();
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(awsS3Configuration.getBucketName())
-                .key(fileName)
-                .build();
-        s3Client.putObject(request, RequestBody.fromBytes(fileData));
+        PutObjectRequest putObjectReq = this.buildPutObjectReq(fileName, awsS3Configuration.getBucketName());
+        s3Client.putObject(putObjectReq, RequestBody.fromBytes(fileData));
     }
 
     /**
@@ -117,10 +118,59 @@ public class AwsS3Client {
      */
     public void deleteFile(String fileName) {
         S3Client s3Client = this.getS3Client();
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(awsS3Configuration.getBucketName())
+        DeleteObjectRequest deleteObjectReq = this.buildDeleteObjectReq(fileName, awsS3Configuration.getBucketName());
+        s3Client.deleteObject(deleteObjectReq);
+    }
+
+    /**
+     * 构建获取(下载)文件请求
+     * @param fileName 文件名
+     * @param bucketName 桶名
+     * @return 获取(下载)文件请求
+     */
+    private GetObjectRequest buildGetObjectReq(String fileName, String bucketName) {
+        return GetObjectRequest.builder()
+                .bucket(bucketName)
                 .key(fileName)
                 .build();
-        s3Client.deleteObject(deleteObjectRequest);
+    }
+
+    /**
+     * 构建上传文件预签名请求
+     * @param fileName 文件名
+     * @param bucketName 桶名
+     * @return 上传文件预签名请求
+     */
+    private PutObjectPresignRequest buildPutObjectPreSignReq(String fileName, String bucketName) {
+        return PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofSeconds(60))
+                .putObjectRequest(this.buildPutObjectReq(fileName, bucketName))
+                .build();
+    }
+
+    /**
+     * 构建上传文件请求
+     * @param fileName 文件名
+     * @param bucketName 桶名
+     * @return 上传文件请求
+     */
+    private PutObjectRequest buildPutObjectReq(String fileName, String bucketName) {
+        return PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+    }
+
+    /**
+     * 构建删除文件请求
+     * @param fileName 文件名
+     * @param bucketName 桶名
+     * @return 删除文件请求
+     */
+    private DeleteObjectRequest buildDeleteObjectReq(String fileName, String bucketName) {
+        return DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
     }
 }
