@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>awssdk</artifactId>
+    <artifactId>mybatis-plus</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,11 +18,10 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/software.amazon.awssdk/s3 -->
         <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3</artifactId>
-            <version>2.21.5</version>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.3.1</version>
         </dependency>
     </dependencies>
 
