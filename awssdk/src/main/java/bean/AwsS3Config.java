@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-public class AwsS3Configuration {
+public class AwsS3Config {
 
     @Value("${aws.storageType}")
     private String storageType;

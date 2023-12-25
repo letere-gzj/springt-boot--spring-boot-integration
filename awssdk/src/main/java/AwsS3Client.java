@@ -1,4 +1,4 @@
-import bean.AwsS3Configuration;
+import bean.AwsS3Config;
 import constant.StorageTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,15 +29,15 @@ import java.util.Objects;
 public class AwsS3Client {
 
     @Autowired
-    private AwsS3Configuration awsS3Configuration;
+    private AwsS3Config awsS3Config;
 
     private S3Client getS3Client() {
         // aws-s3会自动转成桶域名进行访问(https://bucketName.endpoint)，minio不存在桶域名概念，需固定访问路径样式
-        boolean isForcePathStyle = Objects.equals(awsS3Configuration.getStorageType(), StorageTypeEnum.MINIO.getValue());
+        boolean isForcePathStyle = Objects.equals(awsS3Config.getStorageType(), StorageTypeEnum.MINIO.getValue());
         return S3Client.builder()
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsS3Configuration.getAccessKey(), awsS3Configuration.getSecretKey())))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsS3Config.getAccessKey(), awsS3Config.getSecretKey())))
                 .region(Region.AWS_GLOBAL)
-                .endpointOverride(URI.create(awsS3Configuration.getEndpoint()))
+                .endpointOverride(URI.create(awsS3Config.getEndpoint()))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(isForcePathStyle)
                         .chunkedEncodingEnabled(false)
@@ -47,11 +47,11 @@ public class AwsS3Client {
 
     private S3Presigner getS3Presigner() {
         // aws-s3会自动转成桶域名进行访问(https://bucketName.endpoint)，minio不存在桶域名概念，需固定访问路径样式
-        boolean isForcePathStyle = Objects.equals(awsS3Configuration.getStorageType(), StorageTypeEnum.MINIO.getValue());
+        boolean isForcePathStyle = Objects.equals(awsS3Config.getStorageType(), StorageTypeEnum.MINIO.getValue());
         return S3Presigner.builder()
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsS3Configuration.getAccessKey(), awsS3Configuration.getSecretKey())))
+                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(awsS3Config.getAccessKey(), awsS3Config.getSecretKey())))
                 .region(Region.AWS_GLOBAL)
-                .endpointOverride(URI.create(awsS3Configuration.getEndpoint()))
+                .endpointOverride(URI.create(awsS3Config.getEndpoint()))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(isForcePathStyle)
                         .chunkedEncodingEnabled(false)
@@ -66,7 +66,7 @@ public class AwsS3Client {
      */
     public byte[] getFile(String fileName) {
         S3Client s3Client = this.getS3Client();
-        GetObjectRequest getObjectReq = this.buildGetObjectReq(fileName, awsS3Configuration.getBucketName());
+        GetObjectRequest getObjectReq = this.buildGetObjectReq(fileName, awsS3Config.getBucketName());
         return s3Client.getObjectAsBytes(getObjectReq).asByteArray();
     }
 
@@ -77,7 +77,7 @@ public class AwsS3Client {
      */
     public String getPreSignUrl(String fileName) {
         S3Presigner s3Presigner = this.getS3Presigner();
-        PutObjectPresignRequest presignRequest = this.buildPutObjectPreSignReq(fileName, awsS3Configuration.getBucketName());
+        PutObjectPresignRequest presignRequest = this.buildPutObjectPreSignReq(fileName, awsS3Config.getBucketName());
         return s3Presigner.presignPutObject(presignRequest).url().toString();
     }
 
@@ -108,7 +108,7 @@ public class AwsS3Client {
      */
     public void uploadFile(String fileName, byte[] fileData) {
         S3Client s3Client = this.getS3Client();
-        PutObjectRequest putObjectReq = this.buildPutObjectReq(fileName, awsS3Configuration.getBucketName());
+        PutObjectRequest putObjectReq = this.buildPutObjectReq(fileName, awsS3Config.getBucketName());
         s3Client.putObject(putObjectReq, RequestBody.fromBytes(fileData));
     }
 
@@ -118,7 +118,7 @@ public class AwsS3Client {
      */
     public void deleteFile(String fileName) {
         S3Client s3Client = this.getS3Client();
-        DeleteObjectRequest deleteObjectReq = this.buildDeleteObjectReq(fileName, awsS3Configuration.getBucketName());
+        DeleteObjectRequest deleteObjectReq = this.buildDeleteObjectReq(fileName, awsS3Config.getBucketName());
         s3Client.deleteObject(deleteObjectReq);
     }
 
