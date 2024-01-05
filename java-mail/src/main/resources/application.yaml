@@ -1,0 +1,7 @@
+spring:
+  mail:
+    # 邮件发送邮箱
+    username: xxxxxx@qq.com
+    # 密码，通过邮箱手机令牌生成的
+    password: 123456789
+    host: smtp.qq.com
