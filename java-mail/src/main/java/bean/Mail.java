@@ -28,9 +28,14 @@ public class Mail {
     private boolean isHtmlText = false;
 
     /**
-     * 接收者（邮箱地址）
+     * 接收邮箱
      */
-    private String receiver;
+    private String receiveEmail;
+
+    /**
+     * 发送人昵称
+     */
+    private String senderName;
 
     /**
      * 附件集合

@@ -1,7 +1,6 @@
 
 import bean.Mail;
 import bean.MailFile;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,8 +43,8 @@ public class MailClient {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setSubject(mail.getSubject());
             helper.setText(mail.getText(), mail.isHtmlText());
-            helper.setTo(mail.getReceiver());
-            helper.setFrom(sender);
+            helper.setTo(mail.getReceiveEmail());
+            helper.setFrom(sender, mail.getSenderName());
             // 附件
             if (!CollectionUtils.isEmpty(mail.getAttachFiles())) {
                 for (MailFile attachFile : mail.getAttachFiles()) {
@@ -58,7 +57,7 @@ public class MailClient {
                     helper.addInline(inlineFile.getContentId(), inlineFile.getDataSource());
                 }
             }
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
