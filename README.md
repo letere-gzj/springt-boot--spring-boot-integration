@@ -7,3 +7,4 @@
 + awssdk: 整合亚马逊s3协议，通过s3协议对多种云存储服务(常见包括minio, oss, cos, obs, kodo)进行统一管理，进行文件上传操作
 + java-mail：java自带邮件发送类整合
 + mybatis-plus：整合mp，操作sql
++ redis：整合redis，操作缓存

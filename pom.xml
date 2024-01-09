@@ -19,6 +19,7 @@
         <module>aws-sdk</module>
         <module>java-mail</module>
         <module>mybatis-plus</module>
+        <module>redis</module>
     </modules>
 
     <properties>
