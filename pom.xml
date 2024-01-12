@@ -20,6 +20,7 @@
         <module>java-mail</module>
         <module>mybatis-plus</module>
         <module>redis</module>
+        <module>rocket-mq</module>
     </modules>
 
     <properties>

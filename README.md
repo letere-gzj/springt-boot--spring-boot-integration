@@ -8,3 +8,4 @@
 + java-mail：java自带邮件发送类整合
 + mybatis-plus：整合mp，操作sql
 + redis：整合redis，操作缓存
++ rocket-mq：整合rocket-mq，发送消息
