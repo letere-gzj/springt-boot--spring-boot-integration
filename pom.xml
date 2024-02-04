@@ -17,6 +17,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>aws-sdk</module>
+        <module>canal-rocketmq</module>
         <module>java-mail</module>
         <module>mybatis-plus</module>
         <module>redis</module>
