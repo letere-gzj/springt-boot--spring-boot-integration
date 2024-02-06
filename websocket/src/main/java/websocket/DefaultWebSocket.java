@@ -5,6 +5,7 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,11 +50,14 @@ public class DefaultWebSocket {
      * 向客户端发送消息
      * @param userId 用户Id
      * @param message 消息
-     * @throws Exception 异常
      */
-    public void sendMessage(String userId, String message) throws Exception{
+    public void sendMessage(String userId, String message){
         Session session = SESSION_CACHE.get(userId);
-        session.getBasicRemote().sendText(message);
+        try {
+            session.getBasicRemote().sendText(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
