@@ -22,6 +22,7 @@
         <module>mybatis-plus</module>
         <module>redis</module>
         <module>rocket-mq</module>
+        <module>websocket</module>
     </modules>
 
     <properties>
