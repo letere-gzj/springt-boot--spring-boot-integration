@@ -1,4 +1,4 @@
-package websocket;
+package server.websocket;
 
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint("/default/{userId}")
 @Component
-public class DefaultWebSocket {
+public class DefaultWebSocketServer {
 
     private static final Map<String, Session> SESSION_CACHE = new ConcurrentHashMap<>(16);
 
