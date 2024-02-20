@@ -24,14 +24,9 @@ public class DefaultWebSocketClient extends WebSocketClient {
      * @return webSocket客户端
      */
     public static DefaultWebSocketClient connect(String uri) {
-        try {
-            URI serverUri = new URI(uri);
-            DefaultWebSocketClient webSocketClient = new DefaultWebSocketClient(serverUri);
-            webSocketClient.connect();
-            return webSocketClient;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        DefaultWebSocketClient webSocketClient = new DefaultWebSocketClient(URI.create(uri));
+        webSocketClient.connect();
+        return webSocketClient;
     }
 
     @Override
@@ -51,6 +46,6 @@ public class DefaultWebSocketClient extends WebSocketClient {
 
     @Override
     public void onError(Exception e) {
-        System.out.printf("%s --- 链接异常\n", LocalDateTime.now());
+        System.out.printf("%s --- 链接异常, 错误原因:{%s}\n", LocalDateTime.now(), e.getMessage());
     }
 }
