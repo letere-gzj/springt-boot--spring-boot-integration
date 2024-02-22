@@ -18,6 +18,7 @@
     <modules>
         <module>aws-sdk</module>
         <module>canal-rocketmq</module>
+        <module>elastic-search</module>
         <module>java-mail</module>
         <module>mybatis-plus</module>
         <module>redis</module>
