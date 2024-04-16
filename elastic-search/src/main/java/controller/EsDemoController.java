@@ -29,7 +29,7 @@ public class EsDemoController {
     private ElasticsearchOperations elasticsearchOperations;
 
     @PostMapping
-    public void save(@RequestBody EsDemo esDemo) throws Exception{
+    public void save(@RequestBody EsDemo esDemo) {
         esDemo.setCreateTime(LocalDateTime.now());
         elasticsearchOperations.save(esDemo);
     }
@@ -61,7 +61,9 @@ public class EsDemoController {
         Query query = new CriteriaQuery(criteria)
                 .setPageable(pageRequest);
         SearchHits<EsDemo> searchHits = elasticsearchOperations.search(query, EsDemo.class);
-        List<EsDemo> esDemos = searchHits.getSearchHits().stream().map(SearchHit::getContent).collect(Collectors.toList());
+        List<EsDemo> esDemos = searchHits.getSearchHits().stream()
+                .map(SearchHit::getContent)
+                .collect(Collectors.toList());
         return new PageImpl<>(esDemos, pageRequest, searchHits.getTotalHits());
     }
 }

@@ -1,7 +1,7 @@
 package bean;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,20 +10,32 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
+@ConfigurationProperties(prefix = "aws")
 public class AwsS3Config {
 
-    @Value("${aws.storageType}")
+    /**
+     * 存储类型
+     * @see constant.StorageTypeEnum
+     */
     private String storageType;
 
-    @Value("${aws.endpoint}")
+    /**
+     * 上传节点
+     */
     private String endpoint;
 
-    @Value("${aws.bucketName}")
+    /**
+     * 桶名
+     */
     private String bucketName;
 
-    @Value("${aws.accessKey}")
+    /**
+     * 账号（密钥AK）
+     */
     private String accessKey;
 
-    @Value("${aws.secretKey}")
+    /**
+     * 密码（密钥SK）
+     */
     private String secretKey;
 }
