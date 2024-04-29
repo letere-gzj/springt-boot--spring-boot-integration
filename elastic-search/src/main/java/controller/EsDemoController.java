@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -39,9 +40,17 @@ public class EsDemoController {
         elasticsearchOperations.update(esDemo);
     }
 
-    @DeleteMapping
-    public void delete(Integer demoId) {
+    @DeleteMapping("/{demoId}")
+    public void delete(@PathVariable("demoId") Integer demoId) {
         elasticsearchOperations.delete(demoId.toString(), EsDemo.class);
+    }
+
+    @GetMapping("/{demoId}")
+    public EsDemo getInfo(@PathVariable("demoId") Integer demoId) {
+    Criteria criteria = new Criteria("demoId").is(demoId);
+    Query query = new CriteriaQuery(criteria);
+        SearchHit<EsDemo> searchHit = elasticsearchOperations.searchOne(query, EsDemo.class);
+        return Objects.isNull(searchHit) ? null : searchHit.getContent();
     }
 
     @GetMapping("/list")

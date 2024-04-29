@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      # mongodb://username:password@ip:port/database
+      uri: mongodb://admin:123456@127.0.0.1:27017/demo
+      # 是否自动创建索引
+      auto-index-creation: true

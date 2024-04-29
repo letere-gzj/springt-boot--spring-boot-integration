@@ -20,6 +20,7 @@
         <module>canal-rocketmq</module>
         <module>elastic-search</module>
         <module>java-mail</module>
+        <module>mongo-db</module>
         <module>mybatis-plus</module>
         <module>redis</module>
         <module>rocket-mq</module>
