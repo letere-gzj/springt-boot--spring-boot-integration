@@ -18,6 +18,7 @@
     <modules>
         <module>aws-sdk</module>
         <module>canal-rocketmq</module>
+        <module>easy-excel</module>
         <module>elastic-search</module>
         <module>java-mail</module>
         <module>mongo-db</module>
