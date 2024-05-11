@@ -1,20 +1,19 @@
 package listener;
 
-import bean.ExcelDemo;
+import bean.DemoExcel;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.read.listener.ReadListener;
 
 /**
  * @author gaozijie
  * @since 2024-05-06
  */
-public class ExcelDemoListener implements ReadListener<ExcelDemo> {
+public class DemoExcelListener extends BaseExcelListener<DemoExcel> {
 
     /**
      * 这个每一条数据解析都会来调用
      */
     @Override
-    public void invoke(ExcelDemo data, AnalysisContext context) {
+    public void invoke(DemoExcel data, AnalysisContext context) {
         System.out.println("解析到数据：" + data);
     }
 

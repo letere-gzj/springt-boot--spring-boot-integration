@@ -1,10 +1,10 @@
 package controller;
 
-import bean.ExcelDemo;
+import bean.DemoExcel;
 import com.alibaba.excel.EasyExcel;
 import handler.AutoColumnWidthHandler;
 import jakarta.servlet.http.HttpServletResponse;
-import listener.ExcelDemoListener;
+import listener.DemoExcelListener;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,30 +25,30 @@ public class EasyExcelController {
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public void upload(@RequestPart MultipartFile multipartFile) throws Exception{
-        EasyExcel.read(multipartFile.getInputStream(), ExcelDemo.class, new ExcelDemoListener())
+        EasyExcel.read(multipartFile.getInputStream(), DemoExcel.class, new DemoExcelListener())
                 .sheet()
                 .doRead();
     }
 
     @GetMapping("/download")
     public void download(HttpServletResponse response) throws Exception{
-        List<ExcelDemo> excelDemos = this.getExcelDemos();
+        List<DemoExcel> demoExcels = this.getDemoExcels();
         ExcelUtil.setExcelResponse(response, "下载");
-        EasyExcel.write(response.getOutputStream(), ExcelDemo.class)
+        EasyExcel.write(response.getOutputStream(), DemoExcel.class)
                 .sheet()
                 .registerWriteHandler(new AutoColumnWidthHandler())
-                .doWrite(excelDemos);
+                .doWrite(demoExcels);
     }
 
-    private List<ExcelDemo> getExcelDemos() {
-        List<ExcelDemo> excelDemos = new ArrayList<>();
+    private List<DemoExcel> getDemoExcels() {
+        List<DemoExcel> demoExcels = new ArrayList<>();
         for (int i=0; i < 3; i++) {
-            ExcelDemo excelDemo = new ExcelDemo();
-            excelDemo.setName("demo" + i);
-            excelDemo.setDate(LocalDateTime.now().plusHours(i));
-            excelDemo.setScore(Double.valueOf(i + "." + i));
-            excelDemos.add(excelDemo);
+            DemoExcel demoExcel = new DemoExcel();
+            demoExcel.setName("demo" + i);
+            demoExcel.setDate(LocalDateTime.now().plusHours(i));
+            demoExcel.setScore(Double.valueOf(i + "." + i));
+            demoExcels.add(demoExcel);
         }
-        return excelDemos;
+        return demoExcels;
     }
 }

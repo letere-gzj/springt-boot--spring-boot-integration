@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @since 2024-05-06
  */
 @Data
-public class ExcelDemo {
+public class DemoExcel {
 
     @ExcelProperty("名称")
     private String name;
