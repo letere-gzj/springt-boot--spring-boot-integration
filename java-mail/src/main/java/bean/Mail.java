@@ -30,7 +30,7 @@ public class Mail {
     /**
      * 接收邮箱
      */
-    private String receiveEmail;
+    private List<String> receiveEmails;
 
     /**
      * 发送人昵称

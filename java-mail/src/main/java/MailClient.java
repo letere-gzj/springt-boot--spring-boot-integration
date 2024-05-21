@@ -1,10 +1,12 @@
 
 import bean.Mail;
 import bean.MailFile;
+import bean.MailProperties;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -28,9 +30,33 @@ public class MailClient {
      * @param mail 邮件内容
      */
     public void sendMail(Mail mail) {
+        this.sendMail(javaMailSender, mail);
+    }
+
+    /**
+     * 发送邮件
+     * @param javaMailSender 邮件发送者
+     * @param mail 邮件内容
+     */
+    public void sendMail(JavaMailSender javaMailSender, Mail mail) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         this.fillMailContent(mail, mimeMessage);
         javaMailSender.send(mimeMessage);
+    }
+
+    /**
+     * 构建邮件发送者
+     * @param mailProperties 邮件发送配置
+     * @return 邮件发送者
+     */
+    public JavaMailSender buildJavaMailSender(MailProperties mailProperties) {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setUsername(mailProperties.getUsername());
+        javaMailSender.setPassword(mailProperties.getPassword());
+        javaMailSender.setDefaultEncoding("UTF-8");
+        javaMailSender.setHost(mailProperties.getHost());
+        javaMailSender.setProtocol("smtp");
+        return javaMailSender;
     }
 
     /**
@@ -43,7 +69,9 @@ public class MailClient {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setSubject(mail.getSubject());
             helper.setText(mail.getText(), mail.isHtmlText());
-            helper.setTo(mail.getReceiveEmail());
+            String[] receiveEmails = new String[mail.getReceiveEmails().size()];
+            mail.getReceiveEmails().toArray(receiveEmails);
+            helper.setTo(receiveEmails);
             helper.setFrom(sender, mail.getSenderName());
             // 附件
             if (!CollectionUtils.isEmpty(mail.getAttachFiles())) {
