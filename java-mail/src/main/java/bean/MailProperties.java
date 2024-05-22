@@ -8,7 +8,7 @@ import lombok.Data;
  * @since 2024-05-21
  */
 @Data
-public class MailProperties {
+public abstract class MailProperties {
 
     /**
      * 邮箱账号

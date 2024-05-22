@@ -4,12 +4,13 @@ import bean.MailFile;
 import bean.MailProperties;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 邮件工具
@@ -19,11 +20,11 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class MailClient {
 
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender javaMailSender;
 
-    @Value("${spring.mail.username}")
-    private String sender;
+    @Autowired
+    private Environment env;
 
     /**
      * 发送邮件
@@ -39,6 +40,9 @@ public class MailClient {
      * @param mail 邮件内容
      */
     public void sendMail(JavaMailSender javaMailSender, Mail mail) {
+        if (ObjectUtils.isEmpty(mail.getSenderMailBox())) {
+            mail.setSenderMailBox(env.getProperty("spring.mail.username"));
+        }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         this.fillMailContent(mail, mimeMessage);
         javaMailSender.send(mimeMessage);
@@ -69,10 +73,10 @@ public class MailClient {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setSubject(mail.getSubject());
             helper.setText(mail.getText(), mail.isHtmlText());
-            String[] receiveEmails = new String[mail.getReceiveEmails().size()];
-            mail.getReceiveEmails().toArray(receiveEmails);
-            helper.setTo(receiveEmails);
-            helper.setFrom(sender, mail.getSenderName());
+            String[] recMailBoxes = new String[mail.getRecMailBoxes().size()];
+            mail.getRecMailBoxes().toArray(recMailBoxes);
+            helper.setTo(recMailBoxes);
+            helper.setFrom(mail.getSenderMailBox(), mail.getSenderName());
             // 附件
             if (!CollectionUtils.isEmpty(mail.getAttachFiles())) {
                 for (MailFile attachFile : mail.getAttachFiles()) {
