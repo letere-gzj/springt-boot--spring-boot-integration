@@ -11,4 +11,5 @@
 + mybatis-plus：整合mp，操作sql
 + redis：整合redis，操作缓存
 + rocket-mq：整合rocket-mq，发送消息
++ sensitive-word：整合敏感词过滤功能，使用DFA算法实现
 + websocket：整合websocket，客户端，服务端双端通信
