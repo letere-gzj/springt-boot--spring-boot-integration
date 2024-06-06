@@ -176,7 +176,7 @@ public class SensitiveWordUtil {
             for (char c : sensitiveWord.toCharArray()) {
                 nextMap = (Map<String, Object>) currentMap.get(String.valueOf(c));
                 if (Objects.isNull(nextMap)) {
-                    nextMap = new HashMap<>();
+                    nextMap = new HashMap<>(16);
                     nextMap.put(END_TAG, 0);
                     currentMap.put(String.valueOf(c), nextMap);
                 }
