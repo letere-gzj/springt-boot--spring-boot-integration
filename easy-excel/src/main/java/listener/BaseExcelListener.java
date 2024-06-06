@@ -46,6 +46,7 @@ public abstract class BaseExcelListener<T> implements ReadListener<T> {
     /**
      * 获取excel实体类表头
      */
+    @SuppressWarnings({"unchecked"})
     private void getExcelHeaders() {
         // 获取泛型Class
         Type genericSuperclass = this.getClass().getGenericSuperclass();
