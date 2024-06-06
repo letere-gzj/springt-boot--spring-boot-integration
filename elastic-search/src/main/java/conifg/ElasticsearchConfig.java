@@ -37,11 +37,12 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
             return uri;
         }).toList();
         return ClientConfiguration.builder()
-                .connectedTo(uris.toArray(new String[uris.size()]))
+                .connectedTo(uris.toArray(new String[0]))
                 .build();
     }
 
     @Bean
+    @Override
     public ElasticsearchCustomConversions elasticsearchCustomConversions() {
         // 注入转换器处理LocalDateTime数据
         List<Converter<?, ?>> converters = new ArrayList<>(16);
