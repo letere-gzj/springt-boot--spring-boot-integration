@@ -20,6 +20,7 @@
         <module>canal-rocketmq</module>
         <module>easy-excel</module>
         <module>elastic-search</module>
+        <module>ip2region</module>
         <module>java-mail</module>
         <module>mongo-db</module>
         <module>mybatis-plus</module>
