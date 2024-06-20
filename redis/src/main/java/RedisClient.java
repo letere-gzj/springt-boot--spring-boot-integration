@@ -180,22 +180,22 @@ public class RedisClient {
 
     /**
      * 获取符合匹配条件的关键词（阻塞）
-     * @param patten 匹配条件
+     * @param pattern 匹配条件
      * @return 关键词集合
      */
-    public Set<String> keys(String patten) {
-        return stringRedisTemplate.keys(patten);
+    public Set<String> keys(String pattern) {
+        return stringRedisTemplate.keys(pattern);
     }
 
     /**
      * 获取符合匹配条件的关键词（非阻塞）
-     * @param patten 匹配条件
+     * @param pattern 匹配条件
      * @return 关键词集合
      */
-    public Set<String> scan(String patten) {
+    public Set<String> scan(String pattern) {
         Set<String> keys = new HashSet<>(16);
         ScanOptions options = ScanOptions.scanOptions()
-                .match(patten)
+                .match(pattern)
                 .count(1000)
                 .build();
         try (Cursor<String> cursor = stringRedisTemplate.scan(options)) {
