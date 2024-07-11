@@ -1,0 +1,14 @@
+# http代理
+http:
+  proxy:
+    host: 127.0.0.1
+    port: 8080
+
+# 第三方登录配置参数
+just-auth:
+  google:
+    clientId: xxxx
+    clientSecret: xxxx
+  facebook:
+    clientId: xxxx
+    clientSecret: xxxx

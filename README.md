@@ -9,6 +9,7 @@
 + elastic-search：官方整合es，增删查改es数据
 + ip2region：整合ip2region，通过ip地址查询对应地区位置
 + java-mail：java自带邮件发送类整合
++ just-auth：整合just-auth，来实现第三方登录功能
 + mybatis-plus：整合mp，操作sql
 + redis：整合redis，操作缓存
 + rocket-mq：整合rocket-mq，发送消息

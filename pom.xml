@@ -22,6 +22,7 @@
         <module>elastic-search</module>
         <module>ip2region</module>
         <module>java-mail</module>
+        <module>just-auth</module>
         <module>mongo-db</module>
         <module>mybatis-plus</module>
         <module>redis</module>
