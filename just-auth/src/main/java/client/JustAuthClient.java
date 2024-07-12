@@ -55,7 +55,7 @@ public class JustAuthClient {
      * @return 用户信息
      */
     @SuppressWarnings({"unchecked"})
-    public AuthUser parseUserInfo(ThirdLoginTypeEnum thirdLoginType, String callbackUrl, AuthCallback authCallback) {
+    public AuthUser getAuthUser(ThirdLoginTypeEnum thirdLoginType, String callbackUrl, AuthCallback authCallback) {
         AuthRequest authRequest = this.getAuthRequest(thirdLoginType, callbackUrl);
         AuthResponse<AuthUser> response = authRequest.login(authCallback);
         return response.getData();
