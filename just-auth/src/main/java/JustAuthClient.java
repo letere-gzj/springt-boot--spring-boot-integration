@@ -1,5 +1,3 @@
-package client;
-
 import com.xkcoding.http.config.HttpConfig;
 import constant.ThirdLoginTypeEnum;
 import me.zhyd.oauth.config.AuthConfig;

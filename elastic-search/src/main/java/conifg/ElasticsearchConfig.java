@@ -1,6 +1,7 @@
 package conifg;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -9,6 +10,7 @@ import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,21 +26,26 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
     private static final String LOCAL_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    @Value("${spring.elasticsearch.uris}")
-    private List<String> uris;
+    @Autowired
+    private ElasticsearchProperties esProperties;
 
     @Override
     public ClientConfiguration clientConfiguration() {
         // 去除http开头
-        uris = uris.stream().map(uri -> {
+        List<String> uris = esProperties.getUris().stream().map(uri -> {
             if (uri.startsWith("http")) {
                 uri = uri.split("://")[1];
             }
             return uri;
         }).toList();
-        return ClientConfiguration.builder()
-                .connectedTo(uris.toArray(new String[0]))
-                .build();
+        ClientConfiguration.MaybeSecureClientConfigurationBuilder builder = ClientConfiguration.builder()
+                .connectedTo(uris.toArray(new String[0]));
+        // 账号密码验证
+        if (!ObjectUtils.isEmpty(esProperties.getUsername())
+                && !ObjectUtils.isEmpty(esProperties.getPassword())) {
+            builder.withBasicAuth(esProperties.getUsername(), esProperties.getPassword());
+        }
+        return builder.build();
     }
 
     @Bean
