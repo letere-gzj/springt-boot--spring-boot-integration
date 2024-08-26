@@ -73,7 +73,7 @@ public class JustAuthClient {
                         .clientId(config.getClientId())
                         .clientSecret(config.getClientSecret())
                         .redirectUri(callbackUrl)
-                        .scopes(AuthScopeUtils.getScopes(AuthGoogleScope.USER_EMAIL, AuthGoogleScope.USER_PROFILE, AuthGoogleScope.USER_OPENID))
+                        .scopes(AuthScopeUtils.getScopes(AuthGoogleScope.USER_EMAIL, AuthGoogleScope.USER_PROFILE))
                         .httpConfig(this.getHttpConfig())
                         .ignoreCheckState(true)
                         .ignoreCheckRedirectUri(true)
@@ -85,7 +85,7 @@ public class JustAuthClient {
                         .clientId(config.getClientId())
                         .clientSecret(config.getClientSecret())
                         .redirectUri(callbackUrl)
-                        .scopes(List.of(AuthFacebookScope.PUBLIC_PROFILE.getScope(), AuthFacebookScope.EMAIL.getScope()))
+                        .scopes(AuthScopeUtils.getScopes(AuthFacebookScope.PUBLIC_PROFILE, AuthFacebookScope.EMAIL))
                         .httpConfig(this.getHttpConfig())
                         .ignoreCheckRedirectUri(true)
                         .build());
