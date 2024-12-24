@@ -1,0 +1,6 @@
+dada:
+  enable: true
+  appKey: xxx
+  appSecret: xxx
+  shopSourceId: xxx
+  isTestEnv: true
