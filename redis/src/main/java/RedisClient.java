@@ -1,12 +1,16 @@
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -137,17 +141,17 @@ public class RedisClient {
     /**
      * 获取值
      * @param key 关键词
-     * @param target 目标类型
+     * @param type 返回值类型
      * @return 值
      * @param <T> 返回值类型
      */
-    public <T> T get(String key, Class<T> target) {
+    public <T> T get(String key, TypeReference<T> type) {
         try {
             String valStr = stringRedisTemplate.opsForValue().get(key);
             if (Objects.isNull(valStr)) {
                 return null;
             }
-            return objectMapper.readValue(valStr, target);
+            return objectMapper.readValue(valStr, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -156,11 +160,11 @@ public class RedisClient {
     /**
      * 批量获取值
      * @param keys 关键词集合
-     * @param target 返回数据类型
+     * @param type 返回数据类型
      * @return 值集合
      * @param <T> 返回数据类型
      */
-    public <T> List<T> mget(List<String> keys, Class<T> target) {
+    public <T> List<T> mget(List<String> keys, TypeReference<T> type) {
         try {
             List<String> valueStrs = stringRedisTemplate.opsForValue().multiGet(keys);
             if (CollectionUtils.isEmpty(valueStrs)) {
@@ -172,7 +176,7 @@ public class RedisClient {
                     values.add(null);
                     continue;
                 }
-                values.add(objectMapper.readValue(valueStr, target));
+                values.add(objectMapper.readValue(valueStr, type));
             }
             return values;
         } catch (JsonProcessingException e) {
@@ -210,14 +214,58 @@ public class RedisClient {
 
     /**
      * 执行lua脚本
-     * @param script 脚本内容
-     * @param target 返回数据类型
+     * @param scriptStr 脚本内容
      * @param keys 关键词集合
      * @param params 参数集合
+     * @param type 返回数据类型
      * @return 脚本返回内容
-     * @param <T> 返回数据类型
+     * @param <T> 返回数据类型泛型
      */
-    public <T> T eval(String script, Class<T> target, List<String> keys, Object... params) {
-        return stringRedisTemplate.execute(new DefaultRedisScript<>(script, target), keys, params);
+    public <T> T eval(String scriptStr, List<String> keys, List<Object> params, TypeReference<T> type) {
+        // 构建脚本对象
+        DefaultRedisScript<Object> script = new DefaultRedisScript<>(scriptStr, Object.class);
+        // 执行脚本
+        return this.evalScript(script, keys, params, type);
+    }
+
+    /**
+     * 执行lua脚本
+     * @param scriptPath 脚本路径
+     * @param keys 关键词集合
+     * @param params 参数集合
+     * @param type 返回数据类型
+     * @return 脚本返回内容
+     * @param <T> 返回数据类型泛型
+     */
+    public <T> T evalScriptPath(String scriptPath, List<String> keys, List<Object> params, TypeReference<T> type) {
+        // 构建脚本对象
+        DefaultRedisScript<Object> script = new DefaultRedisScript<>();
+        script.setScriptSource(new ResourceScriptSource(new ClassPathResource(scriptPath)));
+        script.setResultType(Object.class);
+        // 执行脚本
+        return this.evalScript(script, keys, params, type);
+    }
+
+    /**
+     * 执行lua脚本
+     * @param script 脚本对象
+     * @param keys 关键词集合
+     * @param params 参数集合
+     * @param type 返回数据类型
+     * @return 脚本返回内容
+     * @param <T> 返回数据类型泛型
+     */
+    private <T> T evalScript(RedisScript<Object> script, List<String> keys, List<Object> params, TypeReference<T> type) {
+        // 执行脚本
+        Object result = stringRedisTemplate.execute(script, keys, params.toArray(new Object[0]));
+        if (Objects.isNull(result)) {
+            return null;
+        }
+        // 数据转换返回
+        try {
+            return objectMapper.readValue(result.toString(), type);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
